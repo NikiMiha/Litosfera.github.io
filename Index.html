@@ -1,0 +1,492 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Литосфера: Твердая оболочка Земли | Интерактивный урок для 5 класса</title>
+    <!-- Google Fonts для современного и читаемого стиля -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (бесплатные иконки) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f8f9fc 0%, #eef2f5 100%);
+            font-family: 'Inter', sans-serif;
+            color: #1e2a3e;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        /* Кастомные анимации и ключевые кадры */
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.3); }
+            70% { box-shadow: 0 0 0 15px rgba(46, 125, 50, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+        }
+
+        @keyframes rockSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(8deg) scale(1.05); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.7s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Контейнеры */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Хедер с плавным градиентом */
+        .hero {
+            background: radial-gradient(circle at 10% 30%, #1e3c2c, #0f2b1f);
+            color: white;
+            padding: 70px 0 90px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "🌍";
+            font-size: 280px;
+            position: absolute;
+            bottom: -40px;
+            right: -40px;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            animation: fadeUp 0.9s ease-out;
+        }
+
+        .hero h1 {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #FFF9C4, #FFE082);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 650px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .btn-explore {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #ffb74d;
+            color: #2d3e2b;
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: 0.25s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-explore:hover {
+            background: #ffa726;
+            transform: scale(1.03);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.25);
+        }
+
+        /* секции общие */
+        section {
+            padding: 70px 0;
+        }
+
+        .section-title {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(120deg, #2c5e2a, #4c8b3c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .section-sub {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #4a5b6e;
+            margin-bottom: 50px;
+        }
+
+        /* Карточки слои */
+        .layers-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .layer-card {
+            background: white;
+            border-radius: 40px;
+            padding: 28px 20px;
+            flex: 1;
+            min-width: 220px;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .layer-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 35px -14px rgba(0,0,0,0.2);
+        }
+
+        .layer-icon {
+            font-size: 3.5rem;
+            margin-bottom: 18px;
+        }
+
+        .layer-card h3 {
+            font-size: 1.7rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .badge-depth {
+            background: #e8f0e7;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* Горные породы и минералы — сетка */
+        .rocks-minerals {
+            background: #fef9e6;
+            border-radius: 60px;
+            padding: 40px 30px;
+            margin-top: 20px;
+        }
+
+        .two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+        }
+
+        .card-item {
+            background: white;
+            border-radius: 32px;
+            padding: 25px;
+            flex: 1;
+            min-width: 250px;
+            transition: all 0.3s;
+            box-shadow: 0 12px 18px -10px rgba(0,0,0,0.08);
+        }
+
+        .card-item i {
+            font-size: 2.8rem;
+            color: #b4690e;
+            margin-bottom: 12px;
+        }
+
+        .card-item h4 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .fun-fact {
+            background: #d9e6b3;
+            border-radius: 28px;
+            padding: 18px 22px;
+            margin-top: 20px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        /* таймлайн истории */
+        .history-timeline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            margin: 40px 0;
+        }
+
+        .timeline-node {
+            background: white;
+            border-radius: 30px;
+            padding: 20px;
+            flex: 1;
+            min-width: 160px;
+            text-align: center;
+            border-left: 6px solid #5d9b4b;
+            transition: 0.2s;
+        }
+
+        .timeline-node .year {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #2f6b2f;
+        }
+
+        /* дополнительный блок "интересный факт" */
+        .extra-block {
+            background: linear-gradient(135deg, #1e3c2c, #2b5e2b);
+            border-radius: 48px;
+            padding: 40px 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .extra-block h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .floating-earth {
+            animation: float 6s ease-in-out infinite;
+            display: inline-block;
+            font-size: 4rem;
+        }
+
+        /* footer */
+        footer {
+            background: #0f1f12;
+            color: #bfcfb5;
+            text-align: center;
+            padding: 30px;
+            border-radius: 40px 40px 0 0;
+            margin-top: 40px;
+        }
+
+        /* адаптивность */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .section-title { font-size: 2rem; }
+            .layer-card h3 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <div class="container hero-content">
+            <h1>🌋 Литосфера <br> Твёрдая броня планеты</h1>
+            <p>Открой для себя удивительный мир камней, гор и драгоценных минералов! Узнай, из чего состоит земная кора и как она менялась миллиарды лет.</p>
+            <a href="#layers" class="btn-explore">Погрузиться в недра <i class="fas fa-arrow-down"></i></a>
+        </div>
+    </div>
+
+    <main>
+        <!-- ПОНЯТИЕ: что такое литосфера -->
+        <section id="concept">
+            <div class="container animate-on-scroll">
+                <div class="section-title">🌎 Что такое литосфера?</div>
+                <div class="section-sub">Главная твёрдая оболочка, на которой мы живём</div>
+                <div style="background: #ffffffcc; backdrop-filter: blur(4px); border-radius: 48px; padding: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
+                    <p style="font-size: 1.2rem; line-height: 1.5; margin-bottom: 20px;"><strong>Литосфера</strong> (от греческих слов «литос» — камень и «сфайра» — шар) — это каменная оболочка Земли. Она включает в себя <strong>земную кору</strong> и <strong>верхнюю часть мантии</strong>. Её толщина колеблется от 30–50 км под равнинами до 70–100 км под горами. Именно литосфера создаёт материки, океанические впадины и острова!</p>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-around; margin-top: 20px;">
+                        <div><i class="fas fa-mountain" style="font-size: 2rem; color:#6b4c3b;"></i> <br> Горы и равнины</div>
+                        <div><i class="fas fa-water" style="font-size: 2rem; color:#2c7da0;"></i> <br> Океаническое дно</div>
+                        <div><i class="fas fa-globe-europe" style="font-size: 2rem; color:#3b8b2c;"></i> <br> 7 огромных литосферных плит</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЛОИ литосферы + карточки -->
+        <section id="layers">
+            <div class="container animate-on-scroll">
+                <div class="section-title">🧩 Слои литосферы</div>
+                <div class="section-sub">От твёрдой коры до горячей мантии</div>
+                <div class="layers-grid">
+                    <div class="layer-card">
+                        <div class="layer-icon">🏔️</div>
+                        <h3>Земная кора</h3>
+                        <p>Тонкий «пирог» из гранита, базальта и осадочных пород. Толщина от 5 км (под океаном) до 70 км (под Гималаями).</p>
+                        <span class="badge-depth">Глубина: 0–70 км</span>
+                    </div>
+                    <div class="layer-card">
+                        <div class="layer-icon">🔥</div>
+                        <h3>Верхняя мантия</h3>
+                        <p>Твёрдая, но пластичная порода. Здесь начинаются движения магмы, вызывающие землетрясения и вулканы.</p>
+                        <span class="badge-depth">Глубина: ~70–400 км</span>
+                    </div>
+                    <div class="layer-card">
+                        <div class="layer-icon">🪨</div>
+                        <h3>Литосферные плиты</h3>
+                        <p>Литосфера разбита на огромные плиты, которые медленно движутся — до 10 см в год!</p>
+                        <span class="badge-depth">Скорость как у растущих ногтей</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- История: как узнали про литосферу -->
+        <section style="background: #eef2e6;">
+            <div class="container animate-on-scroll">
+                <div class="section-title">📜 История открытия</div>
+                <div class="section-sub">Путешествие в прошлое науки о Земле</div>
+                <div class="history-timeline">
+                    <div class="timeline-node"><div class="year">1912 г.</div> Альфред Вегенер предположил, что материки двигаются → теория дрейфа континентов.</div>
+                    <div class="timeline-node"><div class="year">1960-е</div> Учёные открыли спрединг океанского дна и доказали существование литосферных плит.</div>
+                    <div class="timeline-node"><div class="year">Сейчас</div> Спутники GPS отслеживают движение плит с точностью до миллиметров!</div>
+                </div>
+                <div class="fun-fact" style="margin: 10px auto; text-align: center; display: block; width: fit-content;">
+                    <i class="fas fa-lightbulb"></i> Знаете ли вы? Горы Гималаи всё ещё растут, потому что Индийская плита врезается в Евразийскую!
+                </div>
+            </div>
+        </section>
+
+        <!-- Горная порода и минералы -->
+        <section>
+            <div class="container animate-on-scroll">
+                <div class="section-title">⛏️ Горные породы и минералы</div>
+                <div class="section-sub">Строительные кирпичики литосферы</div>
+                <div class="rocks-minerals">
+                    <div class="two-columns">
+                        <div class="card-item">
+                            <i class="fas fa-gem"></i>
+                            <h4>Минералы</h4>
+                            <p>Однородные природные вещества. Например, <strong>кварц, слюда, алмаз, полевой шпат</strong>. Их более 5000 видов! Кварц — один из самых распространённых.</p>
+                            <div class="fun-fact" style="background:#f5e6d3;">✨ Алмаз — самый твёрдый минерал, он царапает даже стекло.</div>
+                        </div>
+                        <div class="card-item">
+                            <i class="fas fa-mountain"></i>
+                            <h4>Горные породы</h4>
+                            <p>Состоят из нескольких минералов. Делятся на <strong>магматические</strong> (гранит, базальт), <strong>осадочные</strong> (песчаник, известняк) и <strong>метаморфические</strong> (мрамор, сланец).</p>
+                            <div class="fun-fact" style="background:#cfe0cf;">🏛️ Мрамор — это известняк, изменившийся под давлением и температурой.</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <i class="fas fa-hammer" style="font-size: 2rem; margin-right: 10px;"></i> Попробуй найти дома кусочек гранита — в нём видны разноцветные зёрнышки минералов!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ДОПОЛНЕНИЕ ОТ СЕБЯ: "Сокровища литосферы" + необычные факты -->
+        <section>
+            <div class="container animate-on-scroll">
+                <div class="extra-block">
+                    <div class="floating-earth">🌍✨</div>
+                    <h3>💎 Сокровища литосферы, которые тебя удивят</h3>
+                    <p style="font-size: 1.2rem; max-width: 800px; margin: 20px auto;">Литосфера хранит не только золото и алмазы, но и <strong>гигантские кристаллы</strong> (пещера Найка, Мексика — кристаллы длиной с автобус!), а также уникальные окаменелости динозавров. Даже твой мобильный телефон содержит минералы из земной коры — например, кварц и колтан!</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 20px;">
+                        <span style="background: #ffecb3; color:#4e3b1f; padding: 6px 18px; border-radius: 40px;">🐚 Ракушечник — порода из древних раковин</span>
+                        <span style="background: #ffecb3; color:#4e3b1f; padding: 6px 18px; border-radius: 40px;">⚡ Пьезокварц создаёт электричество при сжатии</span>
+                        <span style="background: #ffecb3; color:#4e3b1f; padding: 6px 18px; border-radius: 40px;">🌋 Лава остывая, образует базальт — твёрдую чёрную породу</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- интерактивный мини-блок с анимацией карточки-сравнения -->
+        <section>
+            <div class="container animate-on-scroll">
+                <div class="section-title">🧠 А ты знал?</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center;">
+                    <div style="background: white; border-radius: 32px; padding: 25px; text-align: center; width: 260px; transition: all 0.3s; animation: rockSpin 8s infinite ease;">
+                        <i class="fas fa-dragon" style="font-size: 3rem; color: #c27b36;"></i>
+                        <h3 style="margin: 15px 0;">Самая древняя порода</h3>
+                        <p>Возраст некоторых минералов в литосфере достигает 4,4 миллиарда лет! (Циркон из Австралии)</p>
+                    </div>
+                    <div style="background: white; border-radius: 32px; padding: 25px; text-align: center; width: 260px; transition: all 0.3s; animation: rockSpin 8s infinite ease reverse;">
+                        <i class="fas fa-hand-peace" style="font-size: 3rem; color: #56944a;"></i>
+                        <h3 style="margin: 15px 0;">Горы становятся выше</h3>
+                        <p>Эверест ежегодно поднимается на 4 мм, потому что литосферные плиты продолжают движение.</p>
+                    </div>
+                    <div style="background: white; border-radius: 32px; padding: 25px; text-align: center; width: 260px;">
+                        <i class="fas fa-bolt" style="font-size: 3rem; color: #e0912e;"></i>
+                        <h3 style="margin: 15px 0;">Подземные богатства</h3>
+                        <p>Более 90% всех металлов, которые использует человечество, добываются из литосферы.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>🌱 Литосфера — наша твёрдая планета под ногами. Изучай, береги и удивляйся! <br> Интерактивный урок для 5 класса | Вселенная геологии</p>
+        <p style="margin-top: 12px;"><i class="fas fa-rocket"></i> Придумано с любовью к науке о Земле</p>
+    </footer>
+
+    <!-- Скрипт анимации при скролле (Intersection Observer) -->
+    <script>
+        const animatedElements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // однократно
+                }
+            });
+        }, { threshold: 0.2, rootMargin: "0px 0px -20px 0px" });
+        
+        animatedElements.forEach(el => observer.observe(el));
+        
+        // дополнительно: плавный скролл для якоря
+        document.querySelector('.btn-explore').addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector('#layers');
+            if(target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    </script>
+</body>
+</html>
